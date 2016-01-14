@@ -1,7 +1,9 @@
 package tictactoe;
 
+import play.api.PlayException;
 import play.api.mvc.MultipartFormData;
 import scala.Char;
+import scala.xml.persistent.Index;
 
 import java.util.Arrays;
 
@@ -26,12 +28,31 @@ public class Board {
         return size;
     }
 
-    public void setBotMove(Integer row, Integer col){
-        cell[row-1][col-1] = botCode;
+    public boolean isFree(Integer row, Integer column){
+        return cell[row-1][column-1] == null;
     }
 
-    public void setHumanMove(Integer row,Integer col){
+    public boolean setBotMove(Integer row, Integer col) throws Exception {
+        checkValidPosition(row,col);
+        cell[row-1][col-1] = botCode;
+        return true;
+    }
+
+    public boolean setHumanMove(Integer row,Integer col) throws Exception {
+        checkValidPosition(row,col);
         cell[row-1][col-1] = humanCode;
+        return true;
+    }
+
+    private void checkValidPosition(Integer row, Integer col) throws Exception {
+        if ( row < 1 || col < 1)
+            throw new IndexOutOfBoundsException("Row or Column is invalid");
+
+        if (row > size || col > size)
+            throw new IndexOutOfBoundsException("Row or Column is invalid");
+
+        if ( ! isFree(row,col))
+            throw new Exception("Cell already taken");
     }
 
     public Character getCell(Integer row, Integer col){
