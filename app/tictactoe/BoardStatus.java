@@ -44,10 +44,7 @@ public class BoardStatus {
             for (int j=1; j <= board.getSize(); ++j){
                 Character cellValue = board.getCell(i,j);
                 if (count != marks){
-                    if ( cellValue == playerCode)
-                        ++count;
-                    else
-                        count = 0;
+                   count = calculateCount(i,j,count,playerCode);
                 }
                 else
                     break;
@@ -62,12 +59,8 @@ public class BoardStatus {
         int count = 0;
         for (int i = 1 ; i <= board.getSize(); ++i){
             for (int j=1; j <= board.getSize(); ++j){
-                Character cellValue = board.getCell(j,i);
                 if (count != marks){
-                    if ( cellValue == playerCode)
-                        ++count;
-                    else
-                        count = 0;
+                    count = calculateCount(j,i,count,playerCode);
                 }
                 else
                     break;
@@ -80,33 +73,43 @@ public class BoardStatus {
 
     public boolean isWinByDiagonal(Character playerCode){
 
-//       Consider first Diagonal
         int count = 0;
         for(int i = 1; i <= board.getSize(); ++i){
             if (count != marks){
-                if ( playerCode == board.getCell(i,i))
-                    ++count;
-                else
-                    count = 0;
+                count =  calculateCount(i,count,playerCode);
             }
             else
                 return true;
         }
 
-//      Consider second diagonal
         count = 0;
         for( int i= board.getSize(); i >0; --i){
             if (count != marks){
-                if (playerCode == board.getCell(i,i))
-                    ++count;
-                else
-                    count = 0;
+               count =  calculateCount(i,count,playerCode);
             }
             else
                 return true;
         }
 
         return false;
+    }
+
+    private int calculateCount(int position, int count, Character playerCode){
+        if (playerCode == board.getCell(position,position))
+            ++count;
+        else
+            count = 0;
+
+        return count;
+    }
+
+    private int calculateCount( int row,int col,int count, Character playerCode){
+        if ( board.getCell(row,col) == playerCode)
+            ++count;
+        else
+            count = 0;
+
+        return count;
     }
 
 }
