@@ -24,13 +24,13 @@ public class BoardStatus {
 
 
     public boolean isPlayerWinner() {
-        return isWinByColumn(Board.humanCode) ||
+        return isWinByRow(Board.humanCode) ||
                 isWinByColumn(Board.humanCode) ||
                 isWinByDiagonal(Board.humanCode);
     }
 
     public boolean isBotWinner() {
-        return isWinByColumn(Board.botCode) ||
+        return isWinByRow(Board.botCode) ||
                 isWinByColumn(Board.botCode) ||
                 isWinByDiagonal(Board.botCode);
     }
@@ -72,44 +72,37 @@ public class BoardStatus {
     }
 
     public boolean isWinByDiagonal(Character playerCode){
-
-        int count = 0;
-        for(int i = 1; i <= board.getSize(); ++i){
-            if (count != marks){
-                count =  calculateCount(i,count,playerCode);
-            }
-            else
-                return true;
-        }
-
-        count = 0;
-        for( int i= board.getSize(); i >0; --i){
-            if (count != marks){
-               count =  calculateCount(i,count,playerCode);
-            }
-            else
-                return true;
-        }
-
-        return false;
+        return isWinbyFirstDiagonal(playerCode) || isWinBySecondDiagonal(playerCode);
     }
 
     private int calculateCount(int position, int count, Character playerCode){
         if (playerCode == board.getCell(position,position))
-            ++count;
-        else
-            count = 0;
-
-        return count;
+            return  ++count;
+        return 0;
     }
 
     private int calculateCount( int row,int col,int count, Character playerCode){
         if ( board.getCell(row,col) == playerCode)
-            ++count;
-        else
-            count = 0;
+            return ++count;
+        return 0;
+    }
 
-        return count;
+    private boolean isWinbyFirstDiagonal(Character playerCode){
+        int count = 0;
+        for(int i = 1; i <= board.getSize(); ++i){
+            if (count != marks)
+                count =  calculateCount(i,count,playerCode);
+        }
+        return count == marks;
+    }
+
+    private boolean isWinBySecondDiagonal(Character playerCode){
+        int  count = 0;
+        for (int i = board.getSize(), j = 1; i > 0 && j <= board.getSize(); --i,++j){
+            if (count != marks)
+                count = calculateCount(i,j,count,playerCode);
+        }
+        return count == marks;
     }
 
 }
