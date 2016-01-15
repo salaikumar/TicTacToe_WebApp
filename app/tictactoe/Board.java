@@ -1,9 +1,6 @@
 package tictactoe;
 
-import play.api.PlayException;
-import play.api.mvc.MultipartFormData;
-import scala.Char;
-import scala.xml.persistent.Index;
+import play.api.mvc.ActionRefiner;
 
 import java.util.Arrays;
 
@@ -18,10 +15,21 @@ public class Board {
     private Character[][] cell;
     private final Character botCode = 'X';
     private final Character humanCode = 'O';
+    private Integer freeCells;
 
     public Board(Integer size){
         this.size = size;
         cell = new Character[size][size];
+        freeCells = size * size;
+    }
+
+//  Copy Constructor.
+    public Board(Board board){
+        this.size = board.getSize();
+        this.freeCells = board.freeCells;
+        this.cell = new Character[board.getSize()][board.getSize()];
+        for (int i = 0; i < board.getSize(); ++i)
+            System.arraycopy(board.cell[i], 0, this.cell[i], 0, board.getSize());
     }
 
     public Integer getSize(){
@@ -35,12 +43,14 @@ public class Board {
     public boolean setBotMove(Integer row, Integer col) throws Exception {
         checkValidPosition(row,col);
         cell[row-1][col-1] = botCode;
+        --freeCells;
         return true;
     }
 
     public boolean setHumanMove(Integer row,Integer col) throws Exception {
         checkValidPosition(row,col);
         cell[row-1][col-1] = humanCode;
+        --freeCells;
         return true;
     }
 
@@ -75,23 +85,25 @@ public class Board {
         String verticalPadding = "|";
         StringBuilder output = new StringBuilder();
 
-        output.append(horizontalLine+"\n");
+        output.append(horizontalLine);
+        output.append(System.lineSeparator());
 
         for (int i=0; i < size; ++i){
             for (int j= 0; j < size; ++j){
                 output.append(cell[i][j] + verticalPadding);
             }
-            output.append("\n");
+            output.append(System.lineSeparator());
+            output.append(horizontalLine);
+            output.append(System.lineSeparator());
         }
-
-        output.append(horizontalLine);
-
         return new String(output);
 
     }
 
+//  How efficient is this HASH method?
+//  if Board is empty, chances of unique values possible.
     public int hashCode(){
-        return 0;
+        return size * Arrays.deepHashCode(this.cell);
     }
 
     public boolean equals(Object obj){
@@ -108,10 +120,13 @@ public class Board {
             return false;
 
 //      Do I need a deeEquals?
-        if ( !Arrays.equals( this.cell, givenObject.cell))
+        if ( !Arrays.deepEquals( this.cell, givenObject.cell))
             return false;
-
         return true;
+    }
+
+    public boolean isFull(){
+        return freeCells == 0;
     }
 
 }
