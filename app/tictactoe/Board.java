@@ -13,8 +13,8 @@ public class Board {
 
     private Integer size;
     private Character[][] cell;
-    private final Character botCode = 'X';
-    private final Character humanCode = 'O';
+    public static final Character botCode = 'X';
+    public static final Character humanCode = 'O';
     private Integer freeCells;
 
     public Board(Integer size){
