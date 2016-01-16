@@ -2,14 +2,14 @@ package tictactoe;
 
 
 import utils.CellPosition;
+import utils.Winner;
 
 import java.util.regex.Pattern;
 
 public class Game {
-    
-    private Board board;
-    private BoardStatus boardStatus;
 
+    private final Board board;
+    private final BoardStatus boardStatus;
 
     /*
      * Constructor
@@ -20,6 +20,14 @@ public class Game {
         boardStatus = new BoardStatus(board, marks);
     }
 
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public BoardStatus getBoardStatus() {
+        return boardStatus;
+    }
 
     /*
      * humanMove - String that contain coordinates like "M|N"
@@ -32,7 +40,7 @@ public class Game {
         try{
             board.setHumanMove(row,col);
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return false;
         }
 
@@ -46,11 +54,45 @@ public class Game {
         try {
             board.setBotMove(pos.getRow(),pos.getCol());
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             return false;
         }
         return true;
     }
 
+    /*
+     * Return a free position
+     */
+    public CellPosition freePosition(){
+        Character[][] cells = board.getAllCells();
+        for (int i=1; i <= board.getSize(); ++i){
+            for (int j= 1;j <= board.getSize(); ++j){
+                if (board.isFree(i,j))
+                    return new CellPosition(i,j);
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Check if game is over
+     */
+    public boolean isGameOver(){
+        return  ( (board.isFull())      ||
+                  (getWinner() != null)   );
+    }
+
+
+    /*
+     * Get the winner of the Game
+     */
+    public Winner getWinner(){
+        if (boardStatus.isBotWinner())
+            return Winner.BOT;
+        else if(boardStatus.isPlayerWinner())
+            return Winner.PLAYER;
+        else
+            return null;
+    }
 
 }
