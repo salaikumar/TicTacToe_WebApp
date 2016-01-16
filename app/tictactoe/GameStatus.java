@@ -42,7 +42,7 @@ public class GameStatus {
 
     @Override
     public String toString(){
-        StringBuilder output = null;
+        StringBuilder output = new StringBuilder();
 
         output.append("Message:" + message);
         output.append(System.lineSeparator());
