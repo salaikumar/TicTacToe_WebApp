@@ -39,4 +39,29 @@ public class GameStatus {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString(){
+        StringBuilder output = null;
+
+        output.append("Message:" + message);
+        output.append(System.lineSeparator());
+
+        output.append("isGameOver:" + isGameOver);
+        output.append(System.lineSeparator());
+
+        output.append("Status:" + status);
+        output.append(System.lineSeparator());
+
+        output.append("marks:" + winMoves);
+        output.append(System.lineSeparator());
+
+        output.append("Winner:" + winner);
+        output.append(System.lineSeparator());
+
+        output.append("Board:" +board);
+        output.append(System.lineSeparator());
+
+        return new String(output);
+    }
 }

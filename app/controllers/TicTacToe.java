@@ -1,15 +1,13 @@
 package controllers;
 
 
-import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import tictactoe.Game;
 import tictactoe.GameStatus;
 import views.html.index;
-import views.html.move;
 
-import static sun.plugin2.util.PojoUtil.toJson;
+import static play.libs.Json.toJson;
 
 /**
  * Tic Tac Toe Constructor
@@ -50,13 +48,14 @@ public class TicTacToe extends Controller {
          */
          game.humanMove(moves);
          if (game.isGameOver())
-             return ok(toJson(prepareStatus(true,"Game Ended")));
+             return ok(toJson(prepareStatus(true,"Game Ended").toString()));
 
          game.botMove(game.freePosition());
          if (game.isGameOver())
-             return ok(toJson(prepareStatus(true,"Game Ended")));
+             return ok(toJson(prepareStatus(true,"Game Ended").toString()));
 
-         return ok(toJson(prepareStatus(false,"Game running")));
+//         return ok(toJson(prepareStatus(false,"Game running")));
+         return ok(toJson(prepareStatus(false,"Game running").toString()));
     }
 
     private GameStatus prepareStatus(boolean isGameOver,String message){

@@ -4,7 +4,7 @@
 
 # Home page
 #GET     /                           controllers.Application.index()
-GET     /start/:size,:marks         controllers.TicTacToe.start(size:int ,marks:int)
+GET     /start/:size/:marks         controllers.TicTacToe.start(size:Integer ,marks:Integer)
 GET     /move/:moves                controllers.TicTacToe.move(moves:String)
 GET     /ping                       controllers.TicTacToe.ping()
 
