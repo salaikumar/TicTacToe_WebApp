@@ -1,9 +1,15 @@
 package controllers;
 
 
+import play.data.validation.Constraints;
 import play.mvc.Controller;
 import play.mvc.Result;
 import tictactoe.Game;
+import tictactoe.GameStatus;
+import views.html.index;
+import views.html.move;
+
+import static sun.plugin2.util.PojoUtil.toJson;
 
 /**
  * Tic Tac Toe Constructor
@@ -13,9 +19,10 @@ public class TicTacToe extends Controller {
 
     private Game game;
 
-    public void ping(){
+    public Result ping(){
         if (game == null)
             throw new RuntimeException("Game is not initialized");
+        return ok(toJson("Status:Alive"));
     }
 
     /*
@@ -24,17 +31,16 @@ public class TicTacToe extends Controller {
      */
     public Result start(int size, int marks){
         game = new Game(size,marks);
-        return ok();
+        return ok(index.render("Game initiated. Post your move to /move as single String X|Y "));
     }
 
     /*
      * move - humanMove- Cell coordinates will be given by user
+     * Assumption: User will post proper input. - Bad input is not handled here
      */
-    public void move(String move){
-
+    public Result move(String moves){
         if (game == null)
             throw new RuntimeException("Game is not initialized");
-
         /*
          * 1. Make human move
          * 2. Check for gameOver - Yes - Prepare final Status and return
@@ -42,19 +48,28 @@ public class TicTacToe extends Controller {
          * 4. Check for gameOver - Yes - Prepare final Status  and return
          * 5. Prepare intermediate Game Status and return
          */
+         game.humanMove(moves);
+         if (game.isGameOver())
+             return ok(toJson(prepareStatus(true,"Game Ended")));
 
-         game.humanMove(move);
-         if (!game.isGameOver())
-             game.botMove(game.freePosition());
-         else {
-//           Final Status and Return
-         }
-         if (!game.isGameOver()) {
-//           Final Status and Return
-         }
-         else {
-//          intermediate Status and Return
-         }
+         game.botMove(game.freePosition());
+         if (game.isGameOver())
+             return ok(toJson(prepareStatus(true,"Game Ended")));
 
-        }
+         return ok(toJson(prepareStatus(false,"Game running")));
+    }
+
+    private GameStatus prepareStatus(boolean isGameOver,String message){
+        GameStatus gameStatus = new GameStatus();
+        gameStatus.setBoard(game.getBoard().toString());
+        gameStatus.setIsGameOver(isGameOver);
+        gameStatus.setMessage(message);
+        gameStatus.setWinMoves(game.getBoardStatus().getMarks());
+        gameStatus.setStatus("OK");
+
+        if (isGameOver)
+            gameStatus.setWinner(game.getWinner());
+
+        return gameStatus;
+    }
 }

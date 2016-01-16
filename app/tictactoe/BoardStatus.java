@@ -105,4 +105,7 @@ public class BoardStatus {
         return count == marks;
     }
 
+    public int getMarks() {
+        return marks;
+    }
 }
